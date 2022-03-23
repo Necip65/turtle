@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Portfolio</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="turtle.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>Portfolio</h1>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, quas consectetur voluptatem quia, libero rem
-        veritatis deserunt placeat asperiores alias voluptas omnis porro similique illum dicta perferendis repellat quam
-        optio!</p>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+
+        let canvas = document.getElementById("renderCanvas");
+        let engine = new BABYLON.Engine(canvas, true, {
+            preserveDrawingBuffer: true,
+            stencil: true
+        });
+
+        let scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
 </body>
 
 </html>
