@@ -1,10 +1,12 @@
+// https://en.wikipedia.org/wiki/MSWLogo
+
 class Turtle {
     constructor(scene) {
         this.pen = true;
 
         this.mesh1 = BABYLON.MeshBuilder.CreateBox("box", { size: .05 }, scene);
-        this.mesh1.material = new BABYLON.StandardMaterial("", scene);
-        this.mesh1.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+        // this.mesh1.material = new BABYLON.StandardMaterial("", scene);
+        // this.mesh1.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
 
         this.mesh2 = BABYLON.MeshBuilder.CreateBox("box", { size: .05 }, scene);
         // this.mesh2.material = new BABYLON.StandardMaterial("", scene);
@@ -71,6 +73,7 @@ class Turtle {
         return this;
     }
 
+    // distance
     di(t) {
         let dx = this.mesh1.position.x - t.mesh1.position.x;
         let dy = this.mesh1.position.y - t.mesh1.position.y;
@@ -78,25 +81,70 @@ class Turtle {
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    // look at
     la(t) {
         this.mesh1.lookAt(t.mesh1.position);
         return this;
     }
 
+    // forward
     fw(d) {
         return this.forward(d);
     }
 
+    // backward
     bw(d) {
         return this.forward(-d);
     }
 
+    // turn left/up
     lt(dx, dy) {
         return this.rotate(dx, dy, 0);
     }
 
+    // turn right/down
     rt(dx, dy) {
         return this.rotate(-dx, -dy, 0);
+    }
+
+    // draw to
+    to(t) {
+        return this.fw(this.di(t));
+    }
+
+
+    // loop
+    //
+    repeat(max, fn) {
+        for (let i = 0; i < max; i++) {
+            fn(i);
+        }
+        return this;
+    }
+
+    // primitives
+    //
+    circle(length) {
+        let max = 30;
+        let len = length / max;
+        let dg = 360 / max;
+        this.repeat(max, (i) => {
+            this.fw(len).lt(dg, 0);
+        })
+    }
+
+    box(pos, len) {
+        // todo
+    }
+
+    // higher forms
+    //
+    letter(c) {
+        // todo
+    }
+
+    wall(pos, rot, len, high) {
+        // todo
     }
 }
 

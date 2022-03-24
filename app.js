@@ -25,6 +25,18 @@ function createLight(scene) {
     light.diffuse = BABYLON.Color3.FromHexString("#ff9944");
 }
 
+function createPrimitives(scene) {
+    let t = new Turtle(scene);
+    // t.circle(30);
+
+    let pz = new BABYLON.Vector3(0, 0, 0);
+    t.repeat(15, (i) => {
+        t.setPos(pz)
+        t.circle(1 * (i + 1));
+    })
+}
+
+
 function createWing(scene) {
     let a = 180 - 109.5;
     let b = 360 / 3;
@@ -83,14 +95,6 @@ function createHoneyComb(scene) {
         positions.push(v.z);
     }
 
-
-    // let addIndices = (i1, i2, i3) => {
-    //     idx3 +=3;
-    //     indices.push(i1);
-    //     indices.push(i2);
-    //     indices.push(i3);
-    // }
-
     let idx3 = 0;
     let addIndices = () => {
         indices.push(idx3);
@@ -106,14 +110,13 @@ function createHoneyComb(scene) {
     }
 
     let max = 17;
-    let dg = 10; // (3 * 45) / max;
+    let dg = 10;
     let len = 0.5;
     for (let i = 0; i < max; i++) {
 
         turtles.forEach((turtle, index) => {
             turtle.fw(len).lt(dg * (index + 1) * 0.2, (index + 1) * 0.2);
         })
-
 
         // create faces
         for (let i = 1; i < maxTurtles; i++) {
@@ -142,6 +145,8 @@ function createScene() {
 
     createCamera(scene);
     createLight(scene);
+
+    createPrimitives(scene);
     createHoneyComb(scene);
     createWing(scene);
 
