@@ -37,7 +37,7 @@ function createPrimitives(scene) {
 }
 
 
-function createWing(scene) {
+function createHoneyComb(scene) {
     let a = 180 - 109.5;
     let b = 360 / 3;
 
@@ -76,7 +76,7 @@ function createWing(scene) {
     modul(ts3.t3.mesh1.position, vec0);
 }
 
-function createHoneyComb(scene) {
+function createWing(scene) {
     let material = new BABYLON.StandardMaterial("mat", scene);
     material.emissiveColor = BABYLON.Color3.Gray();
     material.linkEmissiveWithDiffuse = true;
