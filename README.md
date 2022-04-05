@@ -22,7 +22,11 @@ For the turns it is necessary to take into account that two angles (0-360) must 
 have fun!
 
 
-## Alternative method
+live demo: https://necips8008.github.io/portfolio/
+
+
+### Alternative method
+Made by necips@live.de
 
 https://playground.babylonjs.com/#55S77X
 
