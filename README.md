@@ -20,3 +20,12 @@ bw: backward (length)
 For the turns it is necessary to take into account that two angles (0-360) must be entered: alpha, an angle between xy and beta, an angle between xz
 
 have fun!
+
+
+## Alternative method
+
+https://playground.babylonjs.com/#55S77X
+
+ro: rotate
+fw: forward
+cl: clone a mesh to current position and rotation
