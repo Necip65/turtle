@@ -1,7 +1,5 @@
 ## 3D Turtle Graphics
-Made by necips@live.de, March 2022
-
-Used Frameworks: babylon.js
+Made by necips@live.de, March 2022, babylon.js
 
 I have revisited the topic of logo programming and now you can operate in 3D spaces with simple commands. 
 You just have to be able to think geometrically here. Imagine you are sitting on a turtle and just command it around.
@@ -11,11 +9,11 @@ mesh1 is the turtle you are moving. mesh2 is the last position and the last rota
 
 There are only a handful of commands, which I shortened to two letters to be able to write faster.
 
-la: look at (turtle)
-lt: turn left (alpha, beta)
-rt: turn right (alpha, beta)
-fw: forward (length)
-bw: backward (length)
+- la: look at (turtle)
+- lt: turn left (alpha, beta)
+- rt: turn right (alpha, beta)
+- fw: forward (length)
+- bw: backward (length)
 
 For the turns it is necessary to take into account that two angles (0-360) must be entered: alpha, an angle between xy and beta, an angle between xz
 
@@ -26,10 +24,10 @@ live demo: https://necips8008.github.io/portfolio/
 
 
 ### Alternative method
-Made by necips@live.de
+Made by necips@live.de, July 2019, babylon.js
 
 https://playground.babylonjs.com/#55S77X
 
-ro: rotate
-fw: forward
-cl: clone a mesh to current position and rotation
+- ro: rotate
+- fw: forward
+- cl: clone a mesh to current position and rotation
