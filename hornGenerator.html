@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>turtle</title>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <script>
+        let canvas = document.getElementById("renderCanvas");
+
+        let createScene = function () {
+            let scene = new BABYLON.Scene(engine);
+            // scene.debugLayer.show();
+            // scene.clearColor = new BABYLON.Color3(0, 0, 0);
+
+            let camera = new BABYLON.ArcRotateCamera("camera",
+                BABYLON.Tools.ToRadians(45),
+                BABYLON.Tools.ToRadians(45),
+                130,
+                BABYLON.Vector3.Zero(), scene);
+            camera.setTarget(BABYLON.Vector3.Zero());
+            camera.attachControl(canvas, true);
+            camera.upperBetaLimit = null;
+            camera.lowerBetaLimit = null;
+            camera.angularSensibilityX = 2000;
+            camera.angularSensibilityY = 2000;
+            camera.wheelPrecision = 50; //Mouse wheel speed
+
+            let lightHemi = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+            lightHemi.intensity = 0.7;
+
+            let light1 = new BABYLON.PointLight("light1", BABYLON.Vector3.Zero(), scene);
+            light1.diffuse = BABYLON.Color3.FromHexString("#ff0000");
+
+            let light2 = new BABYLON.PointLight("light1", BABYLON.Vector3.Zero(), scene);
+            light2.diffuse = BABYLON.Color3.FromHexString("#00ff00");
+
+            let light3 = new BABYLON.PointLight("light1", BABYLON.Vector3.Zero(), scene);
+            light3.diffuse = BABYLON.Color3.FromHexString("#0000ff");
+
+
+            let lines = [];
+            let forward = new BABYLON.Vector3(0, 0, 1);
+
+            class Turtle {
+                constructor(scene) {
+                    this.pen = true;
+                    this.penSize = 1;
+
+                    this.mesh1 = BABYLON.MeshBuilder.CreateBox("box", { size: .05 }, scene);
+                    this.mesh2 = BABYLON.MeshBuilder.CreateBox("box", { size: .025 }, scene);
+                    this.visible(false);
+                }
+
+                // home
+                hm() {
+                    let v0 = new BABYLON.Vector3(0, 0, 0);
+                    this.setPR(v0, v0);
+                    return this;
+                }
+
+                rotate(dx, dy, dz) {
+                    this.mesh2.rotation.copyFrom(this.mesh1.rotation);
+
+                    this.mesh1.rotation.x += BABYLON.Tools.ToRadians(dx);
+                    this.mesh1.rotation.y += BABYLON.Tools.ToRadians(dy);
+                    this.mesh1.rotation.z += BABYLON.Tools.ToRadians(dz);
+                    return this;
+                }
+
+                forward(d) {
+                    this.mesh2.position = this.mesh1.getAbsolutePosition().clone();
+                    this.mesh1.position.addInPlace(this.mesh1.getDirection(forward).normalize().scale(d))
+
+                    if (this.pen) {
+                        // BABYLON.MeshBuilder.CreateLines("line1", { points: [this.mesh1.position, this.mesh2.position] });
+
+                        let line = BABYLON.Mesh.CreateTube("tube", [this.mesh1.position, this.mesh2.position], this.penSize, 16, null, 0, scene, false, BABYLON.Mesh.DOUBLESIDE);
+                        line.convertToFlatShadedMesh();
+                        lines.push(line);
+                    }
+
+                    return this;
+                }
+
+                pendown(pen) {
+                    this.pen = pen;
+                    return this;
+                }
+
+                visible(visible) {
+                    this.mesh1.isVisible = visible;
+                    this.mesh2.isVisible = visible;
+                }
+
+                setPR(position, rotation) {
+                    this.mesh1.position.copyFrom(position);
+                    this.mesh1.rotation.copyFrom(rotation);
+
+                    this.mesh2.position.copyFrom(position);
+                    this.mesh2.rotation.copyFrom(rotation);
+
+                    return this;
+                }
+
+                set(t) {
+                    this.mesh1.position.copyFrom(t.mesh1.position);
+                    this.mesh1.rotation.copyFrom(t.mesh1.rotation);
+
+                    this.mesh2.position.copyFrom(t.mesh2.position);
+                    this.mesh2.rotation.copyFrom(t.mesh2.rotation);
+
+                    return this;
+                }
+
+                setPos(x, y, z) {
+                    this.mesh1.position.set(x, y, z);
+                    this.mesh2.position.set(x, y, z);
+                    return this;
+                }
+
+                setRot(x, y, z) {
+                    this.mesh1.rotation.set(x, y, z);
+                    this.mesh2.rotation.set(x, y, z);
+                    return this;
+                }
+
+
+                la(t) {
+                    this.mesh1.lookAt(t.mesh1.position);
+                    return this;
+                }
+
+                fw(d) {
+                    return this.forward(d);
+                }
+
+                bw(d) {
+                    return this.forward(-d);
+                }
+
+                lt(dx, dy) {
+                    return this.rotate(dx, dy, 0);
+                }
+
+                rt(dx, dy) {
+                    return this.rotate(-dx, -dy, 0);
+                }
+
+                pu() {
+                    return this.pendown(false);
+                }
+
+                pd() {
+                    return this.pendown(true);
+                }
+
+
+                di(t) {
+                    let dx = this.mesh1.position.x - t.mesh1.position.x;
+                    let dy = this.mesh1.position.y - t.mesh1.position.y;
+                    let dz = this.mesh1.position.z - t.mesh1.position.z;
+                    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+                }
+
+                to(t) {
+                    return this.la(t).fw(this.di(t));
+                }
+
+
+                fwDistanceTo(t, f) {
+                    this.la(t);
+                    let di = this.di(t);
+                    return this.fw(di * f);
+                }
+            }
+
+
+            let alpha = 3;
+            let beta = 10;
+
+            // GUI
+            // https://www.babylonjs-playground.com/#DTLQAK#0
+            // https://playground.babylonjs.com/#U9AC0N#1
+            // 
+
+            // GUI
+            var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+            var panel = new BABYLON.GUI.StackPanel();
+            panel.width = "220px";
+            panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+            panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+            advancedTexture.addControl(panel);
+
+            var headerAlpha = new BABYLON.GUI.TextBlock();
+            headerAlpha.text = "alpha: " + Math.floor(alpha * 100) / 100 + " deg";
+            headerAlpha.height = "30px";
+            headerAlpha.color = "white";
+            panel.addControl(headerAlpha);
+
+            var sliderAlpha = new BABYLON.GUI.Slider();
+            sliderAlpha.minimum = -180;
+            sliderAlpha.maximum = 180;
+            sliderAlpha.value = alpha;
+            sliderAlpha.height = "20px";
+            sliderAlpha.width = "200px";
+            sliderAlpha.onValueChangedObservable.add(function (value) {
+                headerAlpha.text = "alpha: " + Math.floor(value * 100) / 100 + " deg";
+                alpha = value;
+
+                lines.forEach((line) => { line.dispose(); })
+                lines = [];
+                renderHorn();
+            });
+            panel.addControl(sliderAlpha);
+
+
+            var headerBeta = new BABYLON.GUI.TextBlock();
+            headerBeta.text = "beta: " + Math.floor(beta * 100) / 100 + " deg";
+            headerBeta.height = "30px";
+            headerBeta.color = "white";
+            panel.addControl(headerBeta);
+
+            var sliderBeta = new BABYLON.GUI.Slider();
+            sliderBeta.minimum = -180;
+            sliderBeta.maximum = 180;
+            sliderBeta.value = beta;
+            sliderBeta.height = "20px";
+            sliderBeta.width = "200px";
+            sliderBeta.onValueChangedObservable.add(function (value) {
+                headerBeta.text = "beta: " + Math.floor(value * 100) / 100 + " deg";
+                beta = value;
+
+                lines.forEach((line) => { line.dispose(); })
+                lines = [];
+                renderHorn();
+            });
+            panel.addControl(sliderBeta);
+
+
+            let renderHorn = () => {
+                let t = new Turtle(scene);
+
+                let max = 20;
+                t.hm();
+                for (let i = 0; i <= max; i++) {
+                    t.penSize = 4.1 - 4 * i / max;
+                    t.fw(t.penSize).lt(alpha, beta)
+                }
+
+                t.hm();
+                // t.pu().setPos(-8, 0, 0).pd()
+                for (let i = 0; i <= max; i++) {
+                    t.penSize = 4.1 - 4 * i / max;
+                    t.fw(t.penSize).lt(alpha, -beta)
+                }
+            }
+            renderHorn();
+
+
+
+
+            // const axes = new BABYLON.AxesViewer(scene, .25);
+
+            return scene;
+        };
+
+
+
+
+        let engine = new BABYLON.Engine(canvas, true, {
+            preserveDrawingBuffer: true,
+            stencil: true
+        });
+        let scene = createScene();
+
+        engine.runRenderLoop(function () {
+            if (scene) {
+                scene.render();
+            }
+        });
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+
+</body>
+
+</html>
