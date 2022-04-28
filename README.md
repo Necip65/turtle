@@ -1,7 +1,7 @@
 ## 3D Turtle Graphics
 Made by necips@live.de, March 2022, babylon.js
 
-![Snapshot](https://necip65.github.io/logo/logo.jpg)
+![Snapshot](https://necip65.github.io/turtle/logo.jpg)
 
 I have revisited the topic of logo programming and now you can operate in 3D spaces with simple commands. 
 You just have to be able to think geometrically here. Imagine you are sitting on a turtle and just command it around.
